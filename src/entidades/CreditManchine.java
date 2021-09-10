@@ -22,4 +22,13 @@ public class CreditManchine {
     public void setIsOccupied(boolean isOccupied) {
         this.isOccupied = isOccupied;
     }
+
+    @Override
+    public String toString() {
+        if (this.isOccupied) {
+            return "Sendo usado por " + this.persongUsing;
+        } else {
+            return "Máquina de cartão livre";
+        }
+    }
 }

@@ -9,6 +9,10 @@ public class Couch {
 
     public Couch() {}
 
+    public boolean isFull() {
+        return this.clients.size() == totalPlaces;
+    }
+
     public int getNumberOfFreeSpaces() {
         return this.totalPlaces - clients.size();
     }

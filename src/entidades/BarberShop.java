@@ -1,42 +1,53 @@
 package entidades;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class BarberShop {
     private int availableStandPlaces;
     private Couch couch;
     private CreditManchine creditManchine;
+    private Barber barberOne;
+    private Barber barberTwo;
+    private Barber barberThree;
     private ArrayList<Barber> barbers = new ArrayList<>();
-    private ArrayList<Client> clients = new ArrayList<>();
+    private ArrayList<Client> clients = Collections.sync(new ArrayList<Client>());
 
     public BarberShop() {
         this.availableStandPlaces = 16;
         this.couch = new Couch();
         this.creditManchine = new CreditManchine();
-        Barber barberOne = new Barber("William");
-        Barber barberTwo = new Barber("Rafael");
-        Barber barberThree = new Barber("Some Other Dude");
+        this.barberOne = new Barber("William", clients);
+        this.barberTwo = new Barber("Rafael", clients);
+        this.barberThree = new Barber("Some Other Dude", clients);
+
+//        this.barbers.add(barberOne);
+//        this.barbers.add(barberTwo);
+//        this.barbers.add(barberThree);
 
         barberOne.start();
         barberTwo.start();
         barberThree.start();
-
-        this.barbers.add(barberOne);
-        this.barbers.add(barberTwo);
-        this.barbers.add(barberThree);
-    }
-
-    public void receiveNewClient(Client client) {
-        this.clients.add(client);
-        this.getBarbers().get(0).attendClient(client);
     }
 
     public void attendClient() {
-
+//        Barber clerk = this.barbers.get(0);
+//        client.getHairCut(clerk);
+//        clerk.clientPayment(client);
     }
 
-    public ArrayList<Client> getClients() {
-        return clients;
+    public void receiveNewClient(Client client) {
+        if (!this.couch.isFull() && false) {
+            this.couch.getClients().add(client);
+        } else if (hasStandingPlaces()) {
+            this.clients.add(client);
+        } else {
+            System.out.println("Barbearia cheia, cliente vai embora.");
+        }
+    }
+
+    private boolean hasStandingPlaces() {
+        return this.availableStandPlaces > this.clients.size();
     }
 
     public ArrayList<Barber> getBarbers() {
@@ -53,6 +64,10 @@ public class BarberShop {
 
     public int getAvailableStandPlaces() {
         return availableStandPlaces;
+    }
+
+    public ArrayList<Client> getClients() {
+        return clients;
     }
 
     @Override

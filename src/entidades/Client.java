@@ -1,6 +1,5 @@
 package entidades;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Client extends Thread {
@@ -16,7 +15,13 @@ public class Client extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (Objects.nonNull(this.barber)) getHairCut();
+            if (Objects.nonNull(this.barber)) {
+                synchronized (this.barber) {
+                    getHairCut();
+                    this.barber.notifyAll();
+                    this.barber = null;
+                }
+            }
             else waitToTryAgain();
         }
     }
@@ -31,8 +36,6 @@ public class Client extends Thread {
         }
 
         System.out.println("Client " + this.getClientName() + " terminou o corte com " + this.barber.getBarberName());
-
-        this.barber = null;
     }
 
     public void waitToTryAgain() {

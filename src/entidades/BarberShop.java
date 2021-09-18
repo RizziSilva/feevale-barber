@@ -1,7 +1,7 @@
 package entidades;
 
+import java.util.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class BarberShop {
     private int availableStandPlaces;
@@ -10,8 +10,7 @@ public class BarberShop {
     private Barber barberOne;
     private Barber barberTwo;
     private Barber barberThree;
-    private ArrayList<Barber> barbers = new ArrayList<>();
-    private ArrayList<Client> clients = Collections.sync(new ArrayList<Client>());
+    private List<Client> clients = Collections.synchronizedList(new ArrayList<>());
 
     public BarberShop() {
         this.availableStandPlaces = 16;
@@ -20,10 +19,6 @@ public class BarberShop {
         this.barberOne = new Barber("William", clients);
         this.barberTwo = new Barber("Rafael", clients);
         this.barberThree = new Barber("Some Other Dude", clients);
-
-//        this.barbers.add(barberOne);
-//        this.barbers.add(barberTwo);
-//        this.barbers.add(barberThree);
 
         barberOne.start();
         barberTwo.start();
@@ -35,6 +30,7 @@ public class BarberShop {
 //        client.getHairCut(clerk);
 //        clerk.clientPayment(client);
     }
+
 
     public void receiveNewClient(Client client) {
         if (!this.couch.isFull() && false) {
@@ -50,10 +46,6 @@ public class BarberShop {
         return this.availableStandPlaces > this.clients.size();
     }
 
-    public ArrayList<Barber> getBarbers() {
-        return barbers;
-    }
-
     public Couch getCouch() {
         return couch;
     }
@@ -66,7 +58,7 @@ public class BarberShop {
         return availableStandPlaces;
     }
 
-    public ArrayList<Client> getClients() {
+    public List<Client> getClients() {
         return clients;
     }
 

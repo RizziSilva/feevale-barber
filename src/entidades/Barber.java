@@ -1,16 +1,17 @@
 package entidades;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Barber extends Thread {
 
+    private final List<Client> clients;
     private String barberName = "";
     private Client client;
-    private final ArrayList<Client> clients;
     private boolean finished = false;
 
-    public Barber(String barberName, ArrayList<Client> clients) {
+    public Barber(String barberName, List<Client> clients) {
         super(barberName);
         this.barberName = barberName;
         this.clients = clients;
@@ -19,10 +20,18 @@ public class Barber extends Thread {
     @Override
     public void run() {
         while (true) {
-            if (clients.size() > 0) {
-                synchronized (clients) {
-                    Client clientToAttend = clients.get(0);
+            Client clientToAttend = getClientToAttend();
+            if (Objects.nonNull(clientToAttend)) {
+                synchronized (this) {
                     clientToAttend.setBarber(this);
+                    clientToAttend.start();
+                    try {
+                        this.wait();
+                    }
+                    catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     this.client = clientToAttend;
                     clientPayment();
                     clients.remove(clientToAttend);
@@ -54,6 +63,17 @@ public class Barber extends Thread {
         }
 
         System.out.println("Barbeiro " + this.getBarberName() + " acordou.");
+    }
+
+    private Client getClientToAttend() {
+        synchronized (clients) {
+            if (clients.size() > 0) {
+                Client client = clients.get(0);
+                clients.remove(client);
+
+                return client;
+            } else return null;
+        }
     }
 
     public boolean isAttendingClient() {

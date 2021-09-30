@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Couch {
     private static final int MAXIMUM_COUCH_CLIENTS = 4;
-    private ArrayList<Client> clients = new ArrayList<>();
+    private final ArrayList<Client> clients = new ArrayList<>();
 
     public Couch() {
     }

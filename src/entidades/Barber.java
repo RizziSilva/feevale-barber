@@ -9,6 +9,8 @@ public class Barber extends Thread {
     private String barberName = "";
     private Client client;
     private boolean isPayed = false;
+    private boolean isBeingPayed = false;
+    private boolean isWaitingCreditMachine = false;
 
 
     public Barber(String barberName, CreditManchine creditManchine, WaitingRoom waitingRoom) {
@@ -21,17 +23,22 @@ public class Barber extends Thread {
     @Override
     public void run() {
         while (true) {
+            this.isBeingPayed = false;
+            this.isWaitingCreditMachine = false;
             Client clientToAttend = getClientToAttend();
             if (Objects.nonNull(clientToAttend)) {
                 synchronized (this) {
                     this.client = clientToAttend;
                     clientToAttend.setBarber(this);
                     clientToAttend.start();
+
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+                    this.isWaitingCreditMachine = true;
                     this.setPayed(false);
                     tryToBePaid();
                 }
@@ -40,27 +47,19 @@ public class Barber extends Thread {
     }
 
     public void getPayment() {
-//        System.out.println("Barbeiro " + this.barberName + " inicio o pagamento de " + this.getClient().getClientName());
-
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             System.out.println("Barbeiro " + this.barberName + " interrompido no pagamento.");
         }
-
-//        System.out.println("Barbeiro " + this.barberName + " terminou o pagamento de " + this.getClient().getClientName());
     }
 
     public void sleep() {
-//        System.out.println("Barbeiro " + this.getBarberName() + " irá começar a dormir.");
-
         try {
-            Thread.sleep(2000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             System.out.println("Barbeiro " + this.getBarberName() + " interrompido em sua cestiada.");
         }
-
-//        System.out.println("Barbeiro " + this.getBarberName() + " acordou.");
     }
 
     public void tryToBePaid() {
@@ -69,8 +68,12 @@ public class Barber extends Thread {
                 boolean isCreditManchineOccupied = getCreditManchineIsOccupied();
 
                 if (!isCreditManchineOccupied) {
+                    this.isBeingPayed = true;
+                    this.isWaitingCreditMachine = false;
                     this.creditManchine.setBarberUsing(this);
+
                     getPayment();
+
                     this.creditManchine.notify();
                     this.setPayed(true);
                     this.client = null;
@@ -80,8 +83,17 @@ public class Barber extends Thread {
     }
 
     public String getAction() {
-        if (Objects.nonNull(this.client)) return "Cortando Cabelo de " + this.client.getClientName();
-        else return "Dormindo.";
+        if (Objects.nonNull(this.client)) {
+            if (!this.isBeingPayed && !this.isWaitingCreditMachine) {
+                return "Cortando Cabelo de " + this.client.getClientName();
+            }
+
+            if (this.isWaitingCreditMachine) {
+                return "Esperando para receber pagamento de " + this.client.getClientName();
+            }
+
+            return "Recebendo Pagamento de " + this.client.getClientName();
+        } else return "Dormindo.";
     }
 
     private boolean getCreditManchineIsOccupied() {

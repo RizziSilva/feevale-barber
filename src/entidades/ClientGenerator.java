@@ -21,7 +21,6 @@ public class ClientGenerator {
                 e.printStackTrace();
             }
             String clientName = "Cliente " + ++clientQuantity;
-            System.out.println("Adicionando o cliente " + clientName + ".");
             Client newClient = new Client(clientName);
             barberShop.receiveNewClient(newClient);
         }

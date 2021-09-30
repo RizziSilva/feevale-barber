@@ -48,7 +48,7 @@ public class Barber extends Thread {
 
     public void getPayment() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             System.out.println("Barbeiro " + this.barberName + " interrompido no pagamento.");
         }
@@ -108,10 +108,6 @@ public class Barber extends Thread {
 
     public String getBarberName() {
         return barberName;
-    }
-
-    public Client getClient() {
-        return client;
     }
 
     public void setPayed(boolean payed) {

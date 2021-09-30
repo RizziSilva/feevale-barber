@@ -27,7 +27,7 @@ public class Client extends Thread {
 
     public void getHairCut() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(6000);
         } catch (InterruptedException e) {
             System.out.println("Cliente " + this.getClientName() + " foi interrompido no corte.");
         }

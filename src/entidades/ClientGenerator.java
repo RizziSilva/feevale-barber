@@ -1,6 +1,8 @@
 package entidades;
 
-public class ClientGenerator extends Thread {
+import java.util.concurrent.TimeUnit;
+
+public class ClientGenerator {
     public BarberShop barberShop;
     public int numberToGenerate = 10;
 
@@ -9,19 +11,19 @@ public class ClientGenerator extends Thread {
         this.numberToGenerate = numberToGenerate;
     }
 
-    @Override
-    public void run() {
+    public void addClients() {
         int clientQuantity = 0;
         while (clientQuantity < this.numberToGenerate) {
 
-            Client newClient = new Client("Cliente " + ++clientQuantity);
-            barberShop.receiveNewClient(newClient);
-
             try {
-                Thread.sleep(3000);
+                TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
-                System.out.println("Erro ao criar o cliente");
+                e.printStackTrace();
             }
+            String clientName = "Cliente " + ++clientQuantity;
+            System.out.println("Adicionando o cliente " + clientName + ".");
+            Client newClient = new Client(clientName);
+            barberShop.receiveNewClient(newClient);
         }
     }
 }

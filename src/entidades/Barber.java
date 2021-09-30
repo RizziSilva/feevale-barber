@@ -1,20 +1,22 @@
 package entidades;
 
-import java.util.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Barber extends Thread {
 
-    private final List<Client> clients;
+    private final CreditManchine creditManchine;
+    private final Couch couch;
     private String barberName = "";
     private Client client;
-    private boolean finished = false;
+    private boolean isPayed = false;
 
-    public Barber(String barberName, List<Client> clients) {
+
+    public Barber(String barberName, CreditManchine creditManchine, Couch couch) {
         super(barberName);
         this.barberName = barberName;
-        this.clients = clients;
+        this.creditManchine = creditManchine;
+        this.couch = couch;
     }
 
     @Override
@@ -23,41 +25,38 @@ public class Barber extends Thread {
             Client clientToAttend = getClientToAttend();
             if (Objects.nonNull(clientToAttend)) {
                 synchronized (this) {
+                    this.client = clientToAttend;
                     clientToAttend.setBarber(this);
                     clientToAttend.start();
                     try {
                         this.wait();
-                    }
-                    catch (InterruptedException e) {
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-                    this.client = clientToAttend;
-                    clientPayment();
-                    clients.remove(clientToAttend);
+                    this.setPayed(false);
+                    tryToBePaid();
                 }
             } else sleep();
         }
     }
 
-    public void clientPayment() {
-        System.out.println("Barbeiro " + this.getBarberName() + " inicio o pagamento de " + this.client.getClientName());
+    public void getPayment() {
+        System.out.println("Barbeiro " + this.barberName + " inicio o pagamento de " + this.getClient().getClientName());
 
         try {
-            Thread.sleep(7000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
-            System.out.println("Barbeiro " + this.getBarberName() + " interrompido em sua função.");
+            System.out.println("Barbeiro " + this.barberName + " interrompido no pagamento.");
         }
 
-        System.out.println("Barbeiro " + this.getBarberName() + " terminou o pagamento de " + this.client.getClientName());
-        this.client = null;
+        System.out.println("Barbeiro " + this.barberName + " terminou o pagamento de " + this.getClient().getClientName());
     }
 
     public void sleep() {
         System.out.println("Barbeiro " + this.getBarberName() + " irá começar a dormir.");
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             System.out.println("Barbeiro " + this.getBarberName() + " interrompido em sua cestiada.");
         }
@@ -65,13 +64,29 @@ public class Barber extends Thread {
         System.out.println("Barbeiro " + this.getBarberName() + " acordou.");
     }
 
-    private Client getClientToAttend() {
-        synchronized (clients) {
-            if (clients.size() > 0) {
-                Client client = clients.get(0);
-                clients.remove(client);
+    public void tryToBePaid() {
+        while (!this.isPayed) {
+            synchronized (this.creditManchine) {
+                boolean isCreditManchineOccupied = getCreditManchineIsOccupied();
 
-                return client;
+                if (!isCreditManchineOccupied) {
+                    this.creditManchine.setBarberUsing(this);
+                    getPayment();
+                    this.creditManchine.notify();
+                    this.setPayed(true);
+                    this.client = null;
+                }
+            }
+        }
+    }
+
+    private boolean getCreditManchineIsOccupied() {
+        return this.creditManchine.getIsOccupied();
+    }
+
+    private Client getClientToAttend() {
+        synchronized (this.couch) {
+            return
             } else return null;
         }
     }
@@ -86,5 +101,13 @@ public class Barber extends Thread {
 
     public void setBarberName(String barberName) {
         this.barberName = barberName;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setPayed(boolean payed) {
+        isPayed = payed;
     }
 }

@@ -6,11 +6,10 @@ public class Start {
 
     public static void main(String[] args) {
 
-        final int NUMBER_OF_CLIENTS = 10;
+        final int NUMBER_OF_CLIENTS = 6;
 
         BarberShop barberShop = new BarberShop();
-        Client client = new Client("Cliente teste");
-        barberShop.getClients().add(client);
         ClientGenerator clientGenerator = new ClientGenerator(barberShop, NUMBER_OF_CLIENTS);
+        clientGenerator.addClients();
     }
 }

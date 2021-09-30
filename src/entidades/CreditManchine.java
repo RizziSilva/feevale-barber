@@ -1,34 +1,43 @@
 package entidades;
 
-public class CreditManchine {
+import java.util.Objects;
 
+public class CreditManchine extends Thread {
+    private Barber barberUsing;
     private boolean isOccupied = false;
-    private String persongUsing = "";
 
-    public CreditManchine() {}
-
-    public String getPersongUsing() {
-        return persongUsing;
+    public CreditManchine(String name) {
+        super(name);
     }
 
-    public void setPersongUsing(String persongUsing) {
-        this.persongUsing = persongUsing;
+    @Override
+    public void run() {
+        while (true) {
+            if (Objects.nonNull(this.barberUsing)) {
+                System.out.println("Será Usada");
+                synchronized (this) {
+                    this.setOccupied(true);
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    this.setBarberUsing(null);
+                    this.setOccupied(false);
+                }
+            }
+        }
+    }
+
+    public void setBarberUsing(Barber barberUsing) {
+        this.barberUsing = barberUsing;
     }
 
     public boolean getIsOccupied() {
         return isOccupied;
     }
 
-    public void setIsOccupied(boolean isOccupied) {
-        this.isOccupied = isOccupied;
-    }
-
-    @Override
-    public String toString() {
-        if (this.isOccupied) {
-            return "Sendo usado por " + this.persongUsing;
-        } else {
-            return "Máquina de cartão livre";
-        }
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
     }
 }

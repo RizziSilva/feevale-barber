@@ -6,6 +6,7 @@ public class Client extends Thread {
 
     private String clientName = "";
     private Barber barber;
+    private boolean isOnCouch = false;
 
     public Client(String clientName) {
         super(clientName);
@@ -18,11 +19,10 @@ public class Client extends Thread {
             if (Objects.nonNull(this.barber)) {
                 synchronized (this.barber) {
                     getHairCut();
-                    this.barber.notifyAll();
+                    this.barber.notify();
                     this.barber = null;
                 }
-            }
-            else waitToTryAgain();
+            } else waitToTryAgain();
         }
     }
 
@@ -30,7 +30,7 @@ public class Client extends Thread {
         System.out.println("Client " + this.getClientName() + " iniciou o corte com " + this.barber.getBarberName());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             System.out.println("Cliente " + this.getClientName() + " foi interrompido no corte.");
         }

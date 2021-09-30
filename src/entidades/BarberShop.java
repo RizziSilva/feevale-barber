@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.ArrayList;
 
 public class BarberShop {
+    private WaitingRoom waitingRoom;
     private int availableStandPlaces;
     private Couch couch;
     private CreditManchine creditManchine;
@@ -15,31 +16,38 @@ public class BarberShop {
     public BarberShop() {
         this.availableStandPlaces = 16;
         this.couch = new Couch();
-        this.creditManchine = new CreditManchine();
-        this.barberOne = new Barber("William", clients);
-        this.barberTwo = new Barber("Rafael", clients);
-        this.barberThree = new Barber("Some Other Dude", clients);
+        this.creditManchine = new CreditManchine("Máquina Cartão");
+        this.barberOne = new Barber("William" , creditManchine, couch);
+        this.barberTwo = new Barber("Rafael", creditManchine, couch);
+        this.barberThree = new Barber("Some Other Dude", creditManchine, couch);
 
         barberOne.start();
         barberTwo.start();
         barberThree.start();
-    }
-
-    public void attendClient() {
-//        Barber clerk = this.barbers.get(0);
-//        client.getHairCut(clerk);
-//        clerk.clientPayment(client);
+        creditManchine.start();
     }
 
 
     public void receiveNewClient(Client client) {
-        if (!this.couch.isFull() && false) {
+        if (!this.couch.isFull()) {
             this.couch.getClients().add(client);
         } else if (hasStandingPlaces()) {
             this.clients.add(client);
         } else {
             System.out.println("Barbearia cheia, cliente vai embora.");
         }
+    }
+
+    public Client getClientToAttend() {
+        if (!this.couch.getClients().isEmpty()) {
+            Client clientToAttend = this.couch.getClients().remove(0);
+            Client standingClientToCouch = this.clients.remove(0);
+            this.couch.getClients().add(standingClientToCouch);
+
+            return clientToAttend;
+        }
+
+        return null;
     }
 
     private boolean hasStandingPlaces() {

@@ -1,22 +1,21 @@
 package entidades;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Barber extends Thread {
 
     private final CreditManchine creditManchine;
-    private final Couch couch;
+    private final WaitingRoom waitingRoom;
     private String barberName = "";
     private Client client;
     private boolean isPayed = false;
 
 
-    public Barber(String barberName, CreditManchine creditManchine, Couch couch) {
+    public Barber(String barberName, CreditManchine creditManchine, WaitingRoom waitingRoom) {
         super(barberName);
         this.barberName = barberName;
         this.creditManchine = creditManchine;
-        this.couch = couch;
+        this.waitingRoom = waitingRoom;
     }
 
     @Override
@@ -41,7 +40,7 @@ public class Barber extends Thread {
     }
 
     public void getPayment() {
-        System.out.println("Barbeiro " + this.barberName + " inicio o pagamento de " + this.getClient().getClientName());
+//        System.out.println("Barbeiro " + this.barberName + " inicio o pagamento de " + this.getClient().getClientName());
 
         try {
             Thread.sleep(3000);
@@ -49,11 +48,11 @@ public class Barber extends Thread {
             System.out.println("Barbeiro " + this.barberName + " interrompido no pagamento.");
         }
 
-        System.out.println("Barbeiro " + this.barberName + " terminou o pagamento de " + this.getClient().getClientName());
+//        System.out.println("Barbeiro " + this.barberName + " terminou o pagamento de " + this.getClient().getClientName());
     }
 
     public void sleep() {
-        System.out.println("Barbeiro " + this.getBarberName() + " irá começar a dormir.");
+//        System.out.println("Barbeiro " + this.getBarberName() + " irá começar a dormir.");
 
         try {
             Thread.sleep(2000);
@@ -61,7 +60,7 @@ public class Barber extends Thread {
             System.out.println("Barbeiro " + this.getBarberName() + " interrompido em sua cestiada.");
         }
 
-        System.out.println("Barbeiro " + this.getBarberName() + " acordou.");
+//        System.out.println("Barbeiro " + this.getBarberName() + " acordou.");
     }
 
     public void tryToBePaid() {
@@ -80,27 +79,23 @@ public class Barber extends Thread {
         }
     }
 
+    public String getAction() {
+        if (Objects.nonNull(this.client)) return "Cortando Cabelo de " + this.client.getClientName();
+        else return "Dormindo.";
+    }
+
     private boolean getCreditManchineIsOccupied() {
         return this.creditManchine.getIsOccupied();
     }
 
     private Client getClientToAttend() {
-        synchronized (this.couch) {
-            return
-            } else return null;
+        synchronized (this.waitingRoom) {
+            return this.waitingRoom.getClientToAttend();
         }
-    }
-
-    public boolean isAttendingClient() {
-        return Objects.nonNull(this.client);
     }
 
     public String getBarberName() {
         return barberName;
-    }
-
-    public void setBarberName(String barberName) {
-        this.barberName = barberName;
     }
 
     public Client getClient() {

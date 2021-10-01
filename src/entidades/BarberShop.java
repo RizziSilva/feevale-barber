@@ -9,7 +9,7 @@ public class BarberShop {
 
     public BarberShop() {
         this.waitingRoom = new WaitingRoom();
-        this.creditManchine = new CreditManchine("Máquina Cartão");
+        this.creditManchine = new CreditManchine();
         this.barberOne = new Barber("William", creditManchine, waitingRoom);
         this.barberTwo = new Barber("Rafael", creditManchine, waitingRoom);
         this.barberThree = new Barber("Some Other Dude", creditManchine, waitingRoom);
@@ -17,7 +17,6 @@ public class BarberShop {
         barberOne.start();
         barberTwo.start();
         barberThree.start();
-        creditManchine.start();
     }
 
     public void receiveNewClient(Client client) {

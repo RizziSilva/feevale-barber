@@ -46,42 +46,6 @@ public class Barber extends Thread {
         }
     }
 
-    public void getPayment() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            System.out.println("Barbeiro " + this.barberName + " interrompido no pagamento.");
-        }
-    }
-
-    public void sleep() {
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            System.out.println("Barbeiro " + this.getBarberName() + " interrompido em sua cestiada.");
-        }
-    }
-
-    public void tryToBePaid() {
-        while (!this.isPayed) {
-            synchronized (this.creditManchine) {
-                boolean isCreditManchineOccupied = getCreditManchineIsOccupied();
-
-                if (!isCreditManchineOccupied) {
-                    this.isBeingPayed = true;
-                    this.isWaitingCreditMachine = false;
-                    this.creditManchine.setBarberUsing(this);
-
-                    getPayment();
-
-                    this.creditManchine.notify();
-                    this.setPayed(true);
-                    this.client = null;
-                }
-            }
-        }
-    }
-
     public String getAction() {
         if (Objects.nonNull(this.client)) {
             if (!this.isBeingPayed && !this.isWaitingCreditMachine) {
@@ -96,13 +60,25 @@ public class Barber extends Thread {
         } else return "Dormindo.";
     }
 
-    private boolean getCreditManchineIsOccupied() {
-        return this.creditManchine.getIsOccupied();
-    }
-
     private Client getClientToAttend() {
         synchronized (this.waitingRoom) {
             return this.waitingRoom.getClientToAttend();
+        }
+    }
+
+    private void tryToBePaid() {
+        synchronized (creditManchine) {
+            this.isBeingPayed = true;
+            this.isWaitingCreditMachine = false;
+            creditManchine.getPayment();
+        }
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            System.out.println("Barbeiro " + this.getBarberName() + " interrompido em sua cestiada.");
         }
     }
 

@@ -18,14 +18,13 @@ public class Client extends Thread {
             if (Objects.nonNull(this.barber)) {
                 synchronized (this.barber) {
                     getHairCut();
-                    this.barber.notify();
-                    this.barber = null;
+                    finishHairCut();
                 }
             } else waitToTryAgain();
         }
     }
 
-    public void getHairCut() {
+    private void getHairCut() {
         try {
             Thread.sleep(6000);
         } catch (InterruptedException e) {
@@ -33,7 +32,12 @@ public class Client extends Thread {
         }
     }
 
-    public void waitToTryAgain() {
+    private void finishHairCut() {
+        this.barber.notify();
+        this.barber = null;
+    }
+
+    private void waitToTryAgain() {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

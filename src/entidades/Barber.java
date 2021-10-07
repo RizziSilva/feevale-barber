@@ -26,6 +26,7 @@ public class Barber extends Thread {
             this.isBeingPayed = false;
             this.isWaitingCreditMachine = false;
             Client clientToAttend = getClientToAttend();
+
             if (Objects.nonNull(clientToAttend)) {
                 synchronized (this) {
                     this.client = clientToAttend;
@@ -42,7 +43,10 @@ public class Barber extends Thread {
                     this.setPayed(false);
                     tryToBePaid();
                 }
-            } else sleep();
+            } else {
+                this.client = null;
+                sleep();
+            }
         }
     }
 

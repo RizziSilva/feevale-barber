@@ -26,8 +26,8 @@ public class BarberShop {
     @Override
     public String toString() {
         return "Estado Atual : " + "\n" +
-                "Clientes Sentados: " + this.waitingRoom.getCouchNumber() + "\n" +
-                "Clientes em Pé: " + this.waitingRoom.getStandingClientsNumber() + "\n" +
+                "Clientes Sentados: " + this.waitingRoom.getCouchNumber() + " | " + this.waitingRoom.getNamesFromClientInCouch() + "\n" +
+                "Clientes em Pé: " + this.waitingRoom.getStandingClientsNumber() + " | " + this.waitingRoom.getNamesFromClientStanding() + "\n" +
                 "Barbeiro " + this.barberOne.getBarberName() + " está: " + this.barberOne.getAction() + "\n" +
                 "Barbeiro " + this.barberTwo.getBarberName() + " está: " + this.barberTwo.getAction() + "\n" +
                 "Barbeiro " + this.barberThree.getBarberName() + " está: " + this.barberThree.getAction() + "\n" +

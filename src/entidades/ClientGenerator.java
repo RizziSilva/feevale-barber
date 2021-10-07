@@ -20,6 +20,7 @@ public class ClientGenerator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            
             String clientName = "Cliente " + ++clientQuantity;
             Client newClient = new Client(clientName);
             barberShop.receiveNewClient(newClient);

@@ -18,7 +18,7 @@ public class WaitingRoom {
         } else if (hasStandingPlaces()) {
             this.standingClients.add(client);
         } else {
-            System.out.println("Barbearia cheia, cliente vai embora.");
+            System.out.println("Barbearia cheia, " + client.getClientName() + " vai embora.");
         }
     }
 
@@ -32,6 +32,26 @@ public class WaitingRoom {
         }
 
         return null;
+    }
+
+    public String getNamesFromClientInCouch() {
+        StringBuilder names = new StringBuilder();
+
+        for (Client client : this.couch.getClients()) {
+            names.append(" - ").append(client.getClientName());
+        }
+
+        return names.toString();
+    }
+
+    public String getNamesFromClientStanding() {
+        StringBuilder names = new StringBuilder();
+
+        for (Client client : this.standingClients) {
+            names.append(" - ").append(client.getClientName());
+        }
+
+        return names.toString();
     }
 
     private void putStandingClientIntoCouch() {
